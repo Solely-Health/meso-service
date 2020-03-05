@@ -27,6 +27,7 @@ func NewFacility(facilityID FacilityID, facilityName, email string) *Facility {
 	}
 }
 
+// GenerateFacilityID -
 func GenerateFacilityID() FacilityID {
 	return FacilityID(guid.NewString())
 }
