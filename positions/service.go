@@ -1,9 +1,12 @@
 package positions
 
-import (
-	"github.com/meso-org/meso/repository"
-)
+import "github.com/meso-org/meso/repository"
 
-type Service interface {
-	AddWorkerToSchedule(worker repository.WorkerID)
+type service struct {
+	positions repository.PositionRepository
+	workers   repository.WorkerRepository
+}
+
+func (s *service) AddWorkerToSchedule(worker repository.WorkerID) {
+
 }
