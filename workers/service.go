@@ -2,6 +2,7 @@ package workers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/meso-org/meso/repository"
 )
@@ -10,6 +11,7 @@ type Service interface {
 	RegisterNewWorker(email, firstName, lastName, occupation, license string) (repository.WorkerID, error)
 	FindWorkerByEmail(repository.Email) (*repository.Worker, error)
 	FindWorkerByID(repository.WorkerID) (*repository.Worker, error)
+	UpdateWorkerLocationPreference(workerID, latitude, longitude, mileRadius string) (*repository.Worker, error)
 	FindAllWorkers() ([]*repository.Worker, error)
 }
 
@@ -27,8 +29,9 @@ func (s *service) RegisterNewWorker(email, firstName, lastName, occupation, lice
 	workerID := repository.GenerateWorkerID()
 
 	parsedEmail := repository.Email(email)
+	defaultLocation := repository.DefaultLocation()
 
-	worker := repository.NewWorker(workerID, parsedEmail, firstName, lastName, occupation, license)
+	worker := repository.NewWorker(workerID, *defaultLocation, parsedEmail, firstName, lastName, occupation, license)
 	if err := s.workers.Store(worker); err != nil {
 		return "", err
 	}
@@ -72,6 +75,48 @@ func (s *service) FindAllWorkers() ([]*repository.Worker, error) {
 		return nil, err
 	}
 	return workers, err
+}
+
+func (s *service) UpdateWorkerLocationPreference(workerID, latitude, longitude, mileRadius string) (*repository.Worker, error) {
+	var err error
+	lat, err := strconv.ParseFloat(latitude, 8)
+	fmt.Printf("%T, %v\n", lat, lat)
+	if err != nil {
+		return nil, err
+	}
+
+	long, err := strconv.ParseFloat(latitude, 8)
+	fmt.Printf("%T, %v\n", lat, lat)
+	if err != nil {
+		return nil, err
+	}
+
+	parsedLocation := repository.NewLocation(lat, long)
+	parsedWorkerID := repository.WorkerID(workerID)
+	fmt.Println("HEYYYYYY: ", workerID, parsedWorkerID)
+
+	if err = s.verifyWorkerIDCurrentlyExists(parsedWorkerID); err != nil {
+		fmt.Printf("ERROR: %v", err)
+		return nil, err
+	}
+	worker, err := s.workers.Update(parsedWorkerID, parsedLocation)
+	if err != nil {
+		err = fmt.Errorf("Unable to perform UpdateWorkerLocationPreference in service: %v", err)
+		fmt.Printf("ERROR: %v", err)
+		return nil, err
+	}
+
+	// TODO EVENT: fire off LocationUpdated event
+	return worker, nil
+}
+
+func (s *service) verifyWorkerIDCurrentlyExists(id repository.WorkerID) error {
+	_, err := s.workers.Find(id)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // NewService - pass this function a repository instance,

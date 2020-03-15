@@ -56,6 +56,27 @@ func (r *workerRepository) FindAll() ([]*repository.Worker, error) {
 	return workers, nil
 }
 
+func (r *workerRepository) Update(workerID repository.WorkerID, x interface{}) (*repository.Worker, error) {
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
+	switch x.(type) {
+	case *repository.Location:
+		for _, worker := range r.workers {
+			if worker.WorkerID == workerID {
+				newLocation, ok := x.(*repository.Location)
+				if !ok {
+					return nil, fmt.Errorf("The provided interface: %v  is not of type Location and somehow passed through switch statement", newLocation)
+				}
+				worker.LocationPreference = *newLocation
+				return worker, nil
+			}
+		}
+	default:
+		return nil, fmt.Errorf("Cannot update worker, bad parameter type: %v", x)
+	}
+	return nil, fmt.Errorf("Cannot update worker, bad parameter type: %v", x)
+}
+
 // NewWorkerRepository returns a new instance of a in-memory cargo repository.
 func NewWorkerRepository() repository.WorkerRepository {
 	return &workerRepository{
