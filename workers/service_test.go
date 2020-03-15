@@ -20,6 +20,9 @@ func (mockWorker *mockWorkersRepository) Find(x interface{}) (*repository.Worker
 func (mockWorker *mockWorkersRepository) FindAll() ([]*repository.Worker, error) {
 	return nil, nil
 }
+func (mockWorker *mockWorkersRepository) Update(workerID repository.WorkerID, x interface{}) (*repository.Worker, error) {
+	return nil, nil
+}
 func TestRegisterNewWorker(t *testing.T) {
 	// create mock variables
 	var (

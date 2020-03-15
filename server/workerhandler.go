@@ -26,6 +26,10 @@ func (h *workerHandler) router() chi.Router {
 		r.Route("/{workerID}", func(r chi.Router) {
 			r.Get("/", h.findWorker)
 		})
+		r.Route("/location", func(r chi.Router) {
+			r.Post("/update", h.setWorkerLocation)
+		})
+
 		/*
 			if we were to add more sub routing:
 			r.Route("/pattern", func(chi.Router) {
@@ -119,6 +123,37 @@ func (h *workerHandler) registerWorker(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
+	}
+}
+
+func (h *workerHandler) setWorkerLocation(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/location/update")
+	var err error
+
+	var request struct {
+		WorkerID   string `json:"workerID"`
+		Latitude   string `json:"latitude"`
+		Longitude  string `json:"longitude"`
+		MileRadius string `json:"mileRadius"`
+	}
+
+	var response struct {
+		ID     repository.WorkerID `json:"workerId"`
+		Worker *repository.Worker  `json:"worker"`
+	}
+
+	if err = json.NewDecoder(r.Body).Decode(&request); err != nil {
+		fmt.Printf("unable to decode json: %v", err)
+	}
+
+	if worker, err := h.s.UpdateWorkerLocationPreference(request.WorkerID, request.Latitude, request.Longitude, request.MileRadius); err != nil {
+		response.Worker = worker
+		response.ID = worker.WorkerID
+		if err := json.NewEncoder(w).Encode(response); err != nil {
+			fmt.Printf("ERROR: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
