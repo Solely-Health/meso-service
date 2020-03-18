@@ -98,3 +98,28 @@ func (r *facilityRepository) Store(f *repository.Facility) error {
 	r.facilities[f.FacilityID] = f
 	return nil
 }
+
+func NewFacilityRepo() repository.FacilityRepository {
+	return &facilityRepository{
+		facilities: make(map[repository.FacilityID]*repository.Facility),
+	}
+}
+
+// Position
+type positionRepository struct {
+	mtx       sync.RWMutex
+	positions map[repository.PositionID]*repository.Position
+}
+
+func (r *positionRepository) Store(p *repository.Position) error {
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
+	r.positions[p.PositionID] = p
+	return nil
+}
+
+func NewPositionRepository() repository.PositionRepository {
+	return &positionRepository{
+		positions: make(map[repository.PositionID]*repository.Position),
+	}
+}

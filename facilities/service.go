@@ -7,7 +7,8 @@ import (
 )
 
 type service struct {
-	facility repository.FacilityRepository
+	facility  repository.FacilityRepository
+	positions repository.PositionRepository
 }
 
 func (s *service) RegisterNewFacility(facilityName, email string) (repository.FacilityID, error) {
@@ -24,4 +25,29 @@ func (s *service) RegisterNewFacility(facilityName, email string) (repository.Fa
 	}
 
 	return facility.FacilityID, nil
+}
+
+func (s *service) CreateJob(facilityID repository.FacilityID, positionID repository.PositionID, schedules []repository.Schedule, title, description string) (repository.Position, error) {
+	newPosition := repository.Position{
+		PositionID:  positionID,
+		FacilityID:  facilityID,
+		Description: description,
+		Title:       title,
+		Schedule:    schedules,
+	}
+
+	if err := s.positions.Store(&newPosition); err != nil {
+		//TODO: dont return positionID lol
+		return newPosition, fmt.Errorf("Unable to execute CreateJob: %v", err)
+	}
+	// TODO: Create an event that notifies workers that a job has been posted (if its in their location range)
+	return newPosition, nil
+}
+
+func NewService(facilityRepo repository.FacilityRepository, positionsRepo repository.PositionRepository) Service {
+	return &service{
+		//TODO make plural lol
+		facility:  facilityRepo,
+		positions: positionsRepo,
+	}
 }
