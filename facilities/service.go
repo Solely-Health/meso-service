@@ -25,3 +25,17 @@ func (s *service) RegisterNewFacility(facilityName, email string) (repository.Fa
 
 	return facility.FacilityID, nil
 }
+
+func (s *service) FindFacilityByID(id repository.FacilityID) (*repository.Facility, error) {
+
+	if id == "" {
+		return nil, err
+	}
+
+	facility, err := s.facilities.Find(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return facility, 
+}

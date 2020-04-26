@@ -8,6 +8,8 @@ type FacilityID string
 
 type FacilityRepository interface {
 	Store(facility *Facility) error
+	Find(x interface{}) (*Facility, error)
+	FindAll() ([]*Facility, error)
 }
 
 // Facility - domain object

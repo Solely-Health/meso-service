@@ -98,3 +98,20 @@ func (r *facilityRepository) Store(f *repository.Facility) error {
 	r.facilities[f.FacilityID] = f
 	return nil
 }
+
+func (r *facilityRepository) Find(x interface{}) (*repository.Facility, error) {
+	switch x.(type) {
+	case repository.FacilityID:
+		id := repository.FacilityID(fmt.Sprintf("%v", x))
+		r.mtx.Lock()
+		defer r.mtx.Unlock()
+		facility := r.facilities[id]
+		if facility == nil {
+			return facility, fmt.Errorf("Cannot find facility by id: %v", id)
+		}
+		return facility, nil
+	default:
+		return nil, fmt.Errorf("Cannot find facility, bad parameter type")
+	}
+	return nil, fmt.Errorf("Cannot find facility, bad parameter type")
+}
