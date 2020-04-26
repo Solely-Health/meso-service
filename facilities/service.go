@@ -37,5 +37,5 @@ func (s *service) FindFacilityByID(id repository.FacilityID) (*repository.Facili
 		return nil, err
 	}
 
-	return facility, 
+	return facility, nil
 }
