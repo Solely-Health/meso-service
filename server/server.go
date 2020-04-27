@@ -19,9 +19,10 @@ type Server struct {
 }
 
 // New - instantiates a new http server w/ router appended to it.
-func New(ws workers.Service) *Server {
+func New(ws workers.Service, fs facilities.Service) *Server {
 	s := &Server{
-		WorkersSVC: ws,
+		WorkersSVC:  ws,
+		FacilitySVC: fs,
 	}
 
 	r := chi.NewRouter()

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -19,13 +20,30 @@ func (h *facilityHandler) router() chi.Router {
 
 	r.Route("/facility", func(chi.Router) {
 		r.Post("/", h.registerFacility)
+		r.Get("/ping", h.testPing)
 	})
 
 	return r
 }
 
+func (h *facilityHandler) testPing(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+	var response = struct {
+		Domain string `json:"domain"`
+		Ping   string `json:"ping"`
+	}{
+		Domain: "facility",
+		Ping:   "pong",
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		encodeError(ctx, err, w)
+		return
+	}
+}
+
 func (h *facilityHandler) registerFacility(w http.ResponseWriter, r *http.Request) {
-	var err error
 	var request struct {
 		Email        string `json:"email"`
 		FacilityName string `json:"facilityName"`
@@ -39,7 +57,9 @@ func (h *facilityHandler) registerFacility(w http.ResponseWriter, r *http.Reques
 		fmt.Printf("unable to decode json: %v", err)
 	}
 
-	response.ID, err = h.s.RegisterNewFacility(request.FacilityName, request.Email)
+	id, err := h.s.RegisterNewFacility(request.FacilityName, request.Email)
+	response.ID = id
+
 	if err != nil {
 		fmt.Printf("ERROR: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)

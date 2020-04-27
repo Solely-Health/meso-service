@@ -39,3 +39,16 @@ func (s *service) FindFacilityByID(id repository.FacilityID) (*repository.Facili
 
 	return facility, nil
 }
+
+func (s *service) FindAllFacilities() ([]*repository.Facility, error) {
+	// TODO: make actual function lol
+	return nil, nil
+}
+
+// NewService - pass this function a repository instance,
+// and it will return a new service that has access to that repository
+func NewService(facilitiesRepo repository.FacilityRepository) Service {
+	return &service{
+		facility: facilitiesRepo,
+	}
+}

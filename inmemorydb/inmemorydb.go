@@ -115,3 +115,21 @@ func (r *facilityRepository) Find(x interface{}) (*repository.Facility, error) {
 	}
 	return nil, fmt.Errorf("Cannot find facility, bad parameter type")
 }
+
+func (r *facilityRepository) FindAll() ([]*repository.Facility, error) {
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
+	facilties := []*repository.Facility{}
+	for _, facility := range r.facilities {
+		facilties = append(facilties, facility)
+	}
+
+	return facilties, nil
+}
+
+// NewFacilityRepository returns a new instance of a in-memory cargo repository.
+func NewFacilityRepository() repository.FacilityRepository {
+	return &facilityRepository{
+		facilities: make(map[repository.FacilityID]*repository.Facility),
+	}
+}

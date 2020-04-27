@@ -5,5 +5,5 @@ import "github.com/meso-org/meso/repository"
 type Service interface {
 	RegisterNewFacility(facilityName, email string) (repository.FacilityID, error)
 	FindFacilityByID(repository.FacilityID) (*repository.Facility, error)
-	FindAllFacilities() ([]*repository.Worker, error)
+	FindAllFacilities() ([]*repository.Facility, error)
 }
