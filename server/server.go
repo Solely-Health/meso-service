@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
-	"github.com/meso-org/meso/facility"
+	"github.com/meso-org/meso/facilities"
 	"github.com/meso-org/meso/workers"
 )
 
@@ -14,7 +14,7 @@ type Server struct {
 	// TODO: make this an array that itterates through different service references and pushes them to a service store
 	// we'll call this service registration or something
 	WorkersSVC  workers.Service
-	FacilitySVC facility.Service
+	FacilitySVC facilities.Service
 	router      chi.Router
 }
 
