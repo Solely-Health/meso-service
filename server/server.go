@@ -6,20 +6,23 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi"
+	"github.com/meso-org/meso/facilities"
 	"github.com/meso-org/meso/workers"
 )
 
 type Server struct {
 	// TODO: make this an array that itterates through different service references and pushes them to a service store
 	// we'll call this service registration or something
-	WorkersSVC workers.Service
-	router     chi.Router
+	WorkersSVC  workers.Service
+	FacilitySVC facilities.Service
+	router      chi.Router
 }
 
 // New - instantiates a new http server w/ router appended to it.
-func New(ws workers.Service) *Server {
+func New(ws workers.Service, fs facilities.Service) *Server {
 	s := &Server{
-		WorkersSVC: ws,
+		WorkersSVC:  ws,
+		FacilitySVC: fs,
 	}
 
 	r := chi.NewRouter()
@@ -29,6 +32,11 @@ func New(ws workers.Service) *Server {
 	// Register worker module related endpoints
 	r.Route("/worker", func(r chi.Router) {
 		h := workerHandler{s.WorkersSVC}
+		r.Mount("/v1", h.router())
+	})
+
+	r.Route("/facility", func(r chi.Router) {
+		h := facilityHandler{s.FacilitySVC}
 		r.Mount("/v1", h.router())
 	})
 
