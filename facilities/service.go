@@ -22,7 +22,7 @@ func (s *service) RegisterNewFacility(facilityName, email string) (repository.Fa
 	if err := s.facility.Store(facility); err != nil {
 		return "", err
 	}
-
+	// TODO: issue out event that facility has been officially registered
 	return facility.FacilityID, nil
 }
 
@@ -41,8 +41,11 @@ func (s *service) FindFacilityByID(id repository.FacilityID) (*repository.Facili
 }
 
 func (s *service) FindAllFacilities() ([]*repository.Facility, error) {
-	// TODO: make actual function lol
-	return nil, nil
+	facilities, err := s.facility.FindAll()
+	if err != nil {
+		return nil, err
+	}
+	return facilities, err
 }
 
 // NewService - pass this function a repository instance,

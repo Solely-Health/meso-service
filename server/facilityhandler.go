@@ -20,6 +20,7 @@ func (h *facilityHandler) router() chi.Router {
 
 	r.Route("/facility", func(chi.Router) {
 		r.Post("/", h.registerFacility)
+		r.Get("/", h.findAllFacilities)
 		r.Get("/ping", h.testPing)
 	})
 
@@ -66,6 +67,24 @@ func (h *facilityHandler) registerFacility(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *facilityHandler) findAllFacilities(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var response struct {
+		Facilities []*repository.Facility
+	}
+
+	response.Facilities, err = h.s.FindAllFacilities()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
