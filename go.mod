@@ -5,6 +5,7 @@ require (
 	github.com/go-chi/chi v4.0.3+incompatible
 	github.com/gorilla/mux v1.7.4 // indirect
 	golang.org/x/tools v0.0.0-20200313205530-4303120df7d8 // indirect
+	gopkg.in/square/go-jose.v2 v2.5.0
 )
 
 go 1.13

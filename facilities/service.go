@@ -29,10 +29,10 @@ func (s *service) RegisterNewFacility(facilityName, email string) (repository.Fa
 func (s *service) FindFacilityByID(id repository.FacilityID) (*repository.Facility, error) {
 
 	if id == "" {
-		return nil, err
+		return nil, fmt.Errorf("ID not provided")
 	}
 
-	facility, err := s.facilities.Find(id)
+	facility, err := s.facility.Find(id)
 	if err != nil {
 		return nil, err
 	}
