@@ -15,6 +15,7 @@ type Server struct {
 	// we'll call this service registration or something
 	WorkersSVC  workers.Service
 	FacilitySVC facilities.Service
+	PositionSVC position.Service
 	router      chi.Router
 }
 
@@ -37,6 +38,11 @@ func New(ws workers.Service, fs facilities.Service) *Server {
 
 	r.Route("/facility", func(r chi.Router) {
 		h := facilityHandler{s.FacilitySVC}
+		r.Mount("/v1", h.router())
+	})
+
+	r.Route("/position", func(r chi.Router) {
+		h := positionHandler{s.FacilitySVC}
 		r.Mount("/v1", h.router())
 	})
 
