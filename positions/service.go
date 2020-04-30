@@ -10,3 +10,32 @@ type service struct {
 func (s *service) AddWorkerToSchedule(worker repository.WorkerID) {
 
 }
+
+func (s *service) CreateNewPosition(facilityID repository.FacilityID,
+	startDateTime repository.StartDateTime,
+	endDateTime repository.EndDateTime,
+	description, title string) (positionID repository.PositionID, err error) {
+	newPosition := repository.Position{}
+
+	positionID = repository.GeneratePositionID()
+
+	newPosition.PositionID = positionID
+	newPosition.StartDateTime = startDateTime
+	newPosition.EndDateTime = endDateTime
+	newPosition.FacilityID = facilityID
+	newPosition.Description = description
+	newPosition.Title = title
+
+	err = s.positions.Store(&newPosition)
+	if err != nil {
+		return newPosition.PositionID, err
+	}
+	return newPosition.PositionID, nil
+}
+
+func NewService(positionRepo repository.PositionRepository, workersRepo repository.WorkerRepository) Service {
+	return &service{
+		positions: positionRepo,
+		workers:   workersRepo,
+	}
+}

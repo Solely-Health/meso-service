@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi"
 	"github.com/meso-org/meso/facilities"
+	"github.com/meso-org/meso/positions"
 	"github.com/meso-org/meso/workers"
 )
 
@@ -15,14 +16,16 @@ type Server struct {
 	// we'll call this service registration or something
 	WorkersSVC  workers.Service
 	FacilitySVC facilities.Service
+	PositionSVC positions.Service
 	router      chi.Router
 }
 
 // New - instantiates a new http server w/ router appended to it.
-func New(ws workers.Service, fs facilities.Service) *Server {
+func New(ws workers.Service, fs facilities.Service, ps positions.Service) *Server {
 	s := &Server{
 		WorkersSVC:  ws,
 		FacilitySVC: fs,
+		PositionSVC: ps,
 	}
 
 	r := chi.NewRouter()
@@ -37,6 +40,11 @@ func New(ws workers.Service, fs facilities.Service) *Server {
 
 	r.Route("/facility", func(r chi.Router) {
 		h := facilityHandler{s.FacilitySVC}
+		r.Mount("/v1", h.router())
+	})
+
+	r.Route("/position", func(r chi.Router) {
+		h := positionHandler{s.PositionSVC}
 		r.Mount("/v1", h.router())
 	})
 
