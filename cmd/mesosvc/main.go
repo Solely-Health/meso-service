@@ -6,6 +6,7 @@ import (
 
 	"github.com/meso-org/meso/facilities"
 	inmem "github.com/meso-org/meso/inmemorydb"
+	"github.com/meso-org/meso/positions"
 	repo "github.com/meso-org/meso/repository"
 	server "github.com/meso-org/meso/server"
 	workers "github.com/meso-org/meso/workers"
@@ -20,12 +21,14 @@ func main() {
 	var (
 		workersRepo    repo.WorkerRepository
 		facilitiesRepo repo.FacilityRepository
+		positionsRepo  repo.PositionRepository
 	)
 
 	// For development purposes we will just use in memory db (for now, can be configured)
 	if inmemorydb {
 		workersRepo = inmem.NewWorkerRepository()
 		facilitiesRepo = inmem.NewFacilityRepository()
+		positionsRepo = inmem.NewPositionRepository()
 	} else {
 		// we can pick and choose what kind of db we want to use here
 	}
@@ -35,8 +38,10 @@ func main() {
 	workersSVC = workers.NewService(workersRepo)
 	var facilitySVC facilities.Service
 	facilitySVC = facilities.NewService(facilitiesRepo)
+	var positionSVC positions.Service
+	positionSVC = positions.NewService(positionsRepo, workersRepo)
 
-	srv := server.New(workersSVC, facilitySVC)
+	srv := server.New(workersSVC, facilitySVC, positionSVC)
 	fmt.Println("bout to serve")
 	http.ListenAndServe(":4040", srv)
 }

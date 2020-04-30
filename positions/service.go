@@ -32,3 +32,10 @@ func (s *service) CreateNewPosition(facilityID repository.FacilityID,
 	}
 	return newPosition.PositionID, nil
 }
+
+func NewService(positionRepo repository.PositionRepository, workersRepo repository.WorkerRepository) Service {
+	return &service{
+		positions: positionRepo,
+		workers:   workersRepo,
+	}
+}

@@ -16,7 +16,7 @@ func (r *positionRepository) Store(p *repository.Position) error {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
 	r.positions[p.PositionID] = p
-	if r.positions[p.PositionID] == p {
+	if r.positions[p.PositionID] != p {
 		return fmt.Errorf("seems as if in memory store errored out")
 	}
 	return nil
@@ -47,4 +47,11 @@ func (r *positionRepository) FindAll() ([]*repository.Position, error) {
 	}
 
 	return positions, nil
+}
+
+// NewPositionRepository returns a new instance of a in-memory cargo repository.
+func NewPositionRepository() repository.PositionRepository {
+	return &positionRepository{
+		positions: make(map[repository.PositionID]*repository.Position),
+	}
 }
