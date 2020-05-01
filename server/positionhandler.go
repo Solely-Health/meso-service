@@ -66,6 +66,7 @@ func (h *positionHandler) createPosition(w http.ResponseWriter, r *http.Request)
 		fmt.Printf("unable to decode json: %v", err)
 	}
 
+	// TODO: Double check whether or not the facility ID is real or not
 	facilityID := repository.FacilityID(request.FacilityID)
 	st, err := time.Parse(config.Dateformat, request.StartDateTime)
 	if err != nil {
@@ -79,8 +80,8 @@ func (h *positionHandler) createPosition(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	startDateTime := repository.StartDateTime(st)
-	endDateTime := repository.EndDateTime(et)
+	startDateTime := repository.JSONTime(st)
+	endDateTime := repository.JSONTime(et)
 
 	response.PositionID, err = h.s.CreateNewPosition(facilityID, startDateTime, endDateTime, request.Description, request.Title)
 	if err != nil {
