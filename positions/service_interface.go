@@ -5,7 +5,7 @@ import (
 )
 
 type Service interface {
-	CreateNewPosition(repository.FacilityID, repository.StartDateTime, repository.EndDateTime, string, string) (repository.PositionID, error)
+	CreateNewPosition(repository.FacilityID, repository.JSONTime, repository.JSONTime, string, string) (repository.PositionID, error)
 	// FindPositionByID(repository.PositionID) (*repository.Position, error)
 	FindAllPositions() ([]*repository.Position, error)
 	AddWorkerToSchedule(worker repository.WorkerID)

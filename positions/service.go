@@ -12,8 +12,8 @@ func (s *service) AddWorkerToSchedule(worker repository.WorkerID) {
 }
 
 func (s *service) CreateNewPosition(facilityID repository.FacilityID,
-	startDateTime repository.StartDateTime,
-	endDateTime repository.EndDateTime,
+	startDateTime repository.JSONTime,
+	endDateTime repository.JSONTime,
 	description, title string) (positionID repository.PositionID, err error) {
 	newPosition := repository.Position{}
 
