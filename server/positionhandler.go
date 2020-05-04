@@ -23,6 +23,9 @@ func (h *positionHandler) router() chi.Router {
 	r.Route("/position", func(chi.Router) {
 		r.Post("/", h.createPosition)
 		r.Get("/", h.listPositions)
+		r.Route("/facility", func(r chi.Router) {
+			r.Get("/{facilityID}", h.positionsByFacility)
+		})
 		r.Get("/ping", h.testPing)
 	})
 
@@ -103,6 +106,27 @@ func (h *positionHandler) listPositions(w http.ResponseWriter, r *http.Request) 
 		Positions []*repository.Position `json:"positions"`
 	}
 	response.Positions, err = h.s.FindAllPositions()
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *positionHandler) positionsByFacility(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	var response struct {
+		Positions []*repository.Position `json:"positions"`
+	}
+
+	facilityID := repository.FacilityID(chi.URLParam(r, "facilityID"))
+
+	response.Positions, err = h.s.FindPositionByFacilityID(facilityID)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

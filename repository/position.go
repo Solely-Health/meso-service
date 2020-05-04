@@ -34,6 +34,7 @@ type PositionRepository interface {
 	Store(position *Position) error
 	Find(x interface{}) (*Position, error)
 	FindAll() ([]*Position, error)
+	FindByFacilityID(facilityID FacilityID) ([]*Position, error)
 }
 
 // GeneratePositionID - return a new PositionID string

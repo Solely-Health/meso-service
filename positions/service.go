@@ -33,6 +33,14 @@ func (s *service) CreateNewPosition(facilityID repository.FacilityID,
 	return newPosition.PositionID, nil
 }
 
+func (s *service) FindPositionByFacilityID(facilityID repository.FacilityID) (positions []*repository.Position, err error) {
+	positions, err = s.positions.FindByFacilityID(facilityID)
+	if err != nil {
+		return positions, err
+	}
+	return positions, nil
+}
+
 func (s *service) FindAllPositions() (positions []*repository.Position, err error) {
 	positions, err = s.positions.FindAll()
 	if err != nil {

@@ -38,6 +38,16 @@ func (r *positionRepository) Find(x interface{}) (*repository.Position, error) {
 	}
 }
 
+func (r *positionRepository) FindByFacilityID(facilityID repository.FacilityID) ([]*repository.Position, error) {
+	var positions []*repository.Position
+	for _, position := range r.positions {
+		if position.FacilityID == facilityID {
+			positions = append(positions, position)
+		}
+	}
+	return positions, nil
+}
+
 func (r *positionRepository) FindAll() ([]*repository.Position, error) {
 	r.mtx.Lock()
 	defer r.mtx.Unlock()
