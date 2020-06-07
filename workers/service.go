@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/asaskevich/EventBus"
 	"github.com/meso-org/meso/repository"
 )
 
@@ -16,7 +17,8 @@ type Service interface {
 }
 
 type service struct {
-	workers repository.WorkerRepository
+	workers  repository.WorkerRepository
+	eventBus EventBus.Bus
 }
 
 func (s *service) RegisterNewWorker(email, firstName, lastName, occupation, license string) (repository.WorkerID, error) {
@@ -121,8 +123,9 @@ func (s *service) verifyWorkerIDCurrentlyExists(id repository.WorkerID) error {
 
 // NewService - pass this function a repository instance,
 // and it will return a new service that has access to that repository
-func NewService(workersRepo repository.WorkerRepository) Service {
+func NewService(workersRepo repository.WorkerRepository, eventBus EventBus.Bus) Service {
 	return &service{
-		workers: workersRepo,
+		eventBus: eventBus,
+		workers:  workersRepo,
 	}
 }

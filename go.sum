@@ -1,3 +1,5 @@
+github.com/asaskevich/EventBus v0.0.0-20200428142821-4fc0642a29f3 h1:LHEOGCi+2CooiWkQB2BlzdMVh6rdRDyt5Wflv4yzvXY=
+github.com/asaskevich/EventBus v0.0.0-20200428142821-4fc0642a29f3/go.mod h1:JS7hed4L1fj0hXcyEejnW57/7LCetXggd+vwrRnYeII=
 github.com/beevik/guid v0.0.0-20170504223318-d0ea8faecee0 h1:oLd/YLOTOgA4D4aAUhIE8vhl/LAP1ZJrj0mDQpl7GB8=
 github.com/beevik/guid v0.0.0-20170504223318-d0ea8faecee0/go.mod h1:XzXWuOd1wJ63MtICHh5+PnvCuxsB/d58T8TswEhI/9I=
 github.com/go-chi/chi v4.0.3+incompatible h1:gakN3pDJnzZN5jqFV2TEdF66rTfKeITyR8qu6ekICEY=

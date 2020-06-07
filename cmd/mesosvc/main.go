@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/asaskevich/EventBus"
 	"github.com/meso-org/meso/facilities"
 	inmem "github.com/meso-org/meso/inmemorydb"
 	"github.com/meso-org/meso/positions"
@@ -15,6 +16,7 @@ import (
 func main() {
 	var (
 		inmemorydb = true
+		bus        = EventBus.New()
 	)
 
 	// Repository Registration here
@@ -35,7 +37,7 @@ func main() {
 
 	// Service Registration here
 	var workersSVC workers.Service
-	workersSVC = workers.NewService(workersRepo)
+	workersSVC = workers.NewService(workersRepo, bus)
 	var facilitySVC facilities.Service
 	facilitySVC = facilities.NewService(facilitiesRepo)
 	var positionSVC positions.Service
