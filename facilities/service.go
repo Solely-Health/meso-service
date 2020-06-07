@@ -3,11 +3,13 @@ package facilities
 import (
 	"fmt"
 
+	"github.com/asaskevich/EventBus"
 	"github.com/meso-org/meso/repository"
 )
 
 type service struct {
 	facility repository.FacilityRepository
+	eventBus EventBus.Bus
 }
 
 func (s *service) RegisterNewFacility(facilityName, email string) (repository.FacilityID, error) {
@@ -50,8 +52,11 @@ func (s *service) FindAllFacilities() ([]*repository.Facility, error) {
 
 // NewService - pass this function a repository instance,
 // and it will return a new service that has access to that repository
-func NewService(facilitiesRepo repository.FacilityRepository) Service {
+func NewService(facilitiesRepo repository.FacilityRepository, eventBus EventBus.Bus) Service {
+	initializeListener(eventBus)
+
 	return &service{
 		facility: facilitiesRepo,
+		eventBus: eventBus,
 	}
 }

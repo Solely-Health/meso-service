@@ -22,8 +22,6 @@ type service struct {
 }
 
 func (s *service) RegisterNewWorker(email, firstName, lastName, occupation, license string) (repository.WorkerID, error) {
-	// TODO Skills, range
-	// email, first name, last name, password, licenses,
 	if email == "" || firstName == "" || lastName == "" || occupation == "" {
 		return "", fmt.Errorf("in RegisterNewWorker, provided arguments are invalid")
 	}
@@ -37,8 +35,9 @@ func (s *service) RegisterNewWorker(email, firstName, lastName, occupation, lice
 	if err := s.workers.Store(worker); err != nil {
 		return "", err
 	}
-	// s.eventBus.Publish("workers:NewWorkerRegistered", worker)
-	// we can trigger a "NewWorkerRegistered" to other services from here
+
+	// PUBlISHING EVENT
+	s.eventBus.Publish("workers:NewWorkerRegistered", *worker)
 	return worker.WorkerID, nil
 }
 
