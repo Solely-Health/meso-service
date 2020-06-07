@@ -35,6 +35,10 @@ func main() {
 		// we can pick and choose what kind of db we want to use here
 	}
 
+	go func() {
+		// bus.Subscribe("workers:NewWorkerRegistered", workers.NewWorkerRegistered)
+	}()
+
 	// Service Registration here
 	var workersSVC workers.Service
 	workersSVC = workers.NewService(workersRepo, bus)

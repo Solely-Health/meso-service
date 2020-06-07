@@ -37,7 +37,7 @@ func (s *service) RegisterNewWorker(email, firstName, lastName, occupation, lice
 	if err := s.workers.Store(worker); err != nil {
 		return "", err
 	}
-
+	// s.eventBus.Publish("workers:NewWorkerRegistered", worker)
 	// we can trigger a "NewWorkerRegistered" to other services from here
 	return worker.WorkerID, nil
 }
